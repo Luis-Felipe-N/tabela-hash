@@ -1,14 +1,21 @@
+
+const prompts = require('prompts');
 class Hash {
     constructor(tamanho) {
       this.tabela = new Array(tamanho);
+      this.tipoHash = 0
     }
   
     hash(chave) {
-      return chave % 211
+      return this.tipoHash == 0 ? this.hash211(chave) : this.hash512(chave)
     }
 
     hash512(chave) {
       return m * (chave * (Math.sqrt(5) - 1) % 1)
+    }
+
+    hash211(chave) {
+      return chave % 211
     }
   
     /**
@@ -67,20 +74,97 @@ class Hash {
         }
       }
     }
+
+    async menu() {
+      // • Escolha de qual função utilizar para inserir elementos na tabela hash;
+      // • Inserção de um elemento na tabela hash;
+      // • Remoção de um elemento na tabela hash;
+      // • Busca de um elemento na tabela hash;
+      // • Impressão da tabela hash
+      let opcaoHash;
+      for(;;) {  
+
+        if (typeof opcaoHash === "undefined") {
+          ({ opcaoHash } = await prompts({
+            type: 'select',
+            name: 'opcaoHash',
+            message: 'Qual método hash?',
+            choices: [
+              { title: 'Divisão', value: 0 },
+              { title: 'Multiplicação', value: 1 }
+            ],
+          }))
+        }
+
+        const { opcao } = await prompts({
+          type: 'select',
+          name: 'opcao',
+          message: 'Escolha uma função: ',
+          choices: [
+            { title: 'Inserção', value: 0 },
+            { title: 'Remoção', value: 1 },
+            { title: 'Busca', value: 2 },
+            { title: 'Impressão', value: 3 }
+          ],
+        })
+      
+        this.tipoHash = opcaoHash
+        
+        switch (opcao) {
+          case 0:
+            // Inserir
+            const { valorInsersao } = await prompts({
+              type: 'number',
+              name: 'valorInsersao',
+              message: 'Qual número deseja inserir?'
+            });
+          
+            this.inserir(valorInsersao)
+            break;
+          case 1:
+              // Remover
+              const { valorRemocao } = await prompts({
+                type: 'number',
+                name: 'valorRemocao',
+                message: 'Qual número deseja inserir?'
+              });
+            
+              this.remover(valorRemocao)
+              break;
+          case 2:
+            // Busca
+            const { valorBusca } = await prompts({
+              type: 'number',
+              name: 'valorBusca',
+              message: 'Qual número deseja inserir?'
+            });
+          
+            console.log(this.busca(valorBusca))
+            break;
+          case 3:
+            // Impressão
+            this.display()
+            break;
+          default:
+            break;
+        }
+      }
+    }
   }
   
   const tabela = new Hash();
-  tabela.inserir(2);
-  tabela.inserir(5);
-  tabela.display();
-  console.log('#################')
-  tabela.inserir(211);
-  tabela.display();
-  console.log('#################')
-  tabela.inserir(422);
-  console.log(tabela.busca(422));
-  tabela.display();
-  tabela.remover(422);
-  tabela.display();
-  console.log('#################')
+  tabela.menu()
+  // tabela.inserir(2);
+  // tabela.inserir(5);
+  // tabela.display();
+  // console.log('#################')
+  // tabela.inserir(211);
+  // tabela.display();
+  // console.log('#################')
+  // tabela.inserir(422);
+  // console.log(tabela.busca(422));
+  // tabela.display();
+  // tabela.remover(422);
+  // tabela.display();
+  // console.log('#################')
   
