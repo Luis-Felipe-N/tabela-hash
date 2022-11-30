@@ -11,7 +11,9 @@ class Hash {
     }
 
     hash512(chave) {
-      return m * (chave * (Math.sqrt(5) - 1) % 1)
+      const m = 512;
+
+      return m * (chave * ((Math.sqrt(5) - 1)/2) % 1)
     }
 
     hash211(chave) {
@@ -24,9 +26,11 @@ class Hash {
      * - Se tiver algum elemento, verifica se é diferente, se não for adiciona.
      */
     inserir(valor) {
-      const index = this.hash(valor);
+      const indexf = this.hash(valor);
+      const index = parseInt(indexf)
       const bucket = this.tabela[index];
-  
+      
+
       if (!bucket) {
         this.tabela[index] = [{valor: valor, prox: null}];
       } else {
@@ -45,7 +49,8 @@ class Hash {
      * - Depois procura na lista de encadeamento o valor.
      */
     busca(valor) {
-      const index = this.hash(valor);
+      const indexf = this.hash(valor);
+      const index = parseInt(indexf)
       const bucket = this.tabela[index];
       
       if (bucket) {
@@ -64,7 +69,8 @@ class Hash {
      * -  Se tiver um antecessor do elemento, o prox é passado para ele
      */
     remover(valor) {
-      let index = this.hash(valor);
+      let indexf = this.hash(valor);
+      let index = parseInt(indexf)
       const bucket = this.tabela[index];
 
       if (bucket) {
@@ -81,11 +87,6 @@ class Hash {
     display() {
       console.clear()
       console.table(this.tabela)
-      for (let i = 0; i < this.tabela.length; i++) {
-        if (this.tabela[i]) {
-          console.log(i, this.tabela[i]);
-        }
-      }
     }
 
     async menu() {
@@ -139,7 +140,7 @@ class Hash {
               const { valorRemocao } = await prompts({
                 type: 'number',
                 name: 'valorRemocao',
-                message: 'Qual número deseja inserir?'
+                message: 'Qual número deseja remover?'
               });
             
               this.remover(valorRemocao)
@@ -149,7 +150,7 @@ class Hash {
             const { valorBusca } = await prompts({
               type: 'number',
               name: 'valorBusca',
-              message: 'Qual número deseja inserir?'
+              message: 'Qual número deseja buscar?'
             });
           
             console.log('Valor encontrado', this.busca(valorBusca))
